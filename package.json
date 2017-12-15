@@ -2,19 +2,19 @@
   "name": "fullvote",
   "author": "Craig Martin",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A voting algorithm for good",
   "main": "lib/algorithm/index.js",
-  "dependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-typescript": "^7.0.0-alpha.19"
-  },
+  "files": [
+    "src/algorithm/index.js",
+    "LICENSE"
+  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-typescript": "^7.0.0-alpha.19",
     "jest": "^21.2.1",
+    "np": "^2.18.3",
     "prettier": "^1.9.2"
   },
   "scripts": {
@@ -26,7 +26,8 @@
     "js:test": "jest",
     "js:test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --verbose",
     "prettier": "prettier --write  \"src/**/*.js\" \"!src/**/*.spec.js\"",
-    "prettier-test": "prettier -l \"src/**/*.js\" \"!src/**/*.spec.js\""
+    "prettier-test": "prettier -l \"src/**/*.js\" \"!src/**/*.spec.js\"",
+    "pub": "np"
   },
   "babel": {
     "presets": [
@@ -38,6 +39,5 @@
     "tabWidth": 2,
     "singleQuote": true,
     "trailingComma": "none"
-
   }
 }
