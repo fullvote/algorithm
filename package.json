@@ -1,9 +1,9 @@
 {
-  "name": "fair-vote",
+  "name": "fullvote",
   "author": "Craig Martin",
   "license": "MIT",
   "version": "1.0.0",
-  "description": "A path forward for elections",
+  "description": "A voting algorithm for good",
   "main": "lib/algorithm/index.js",
   "dependencies": {
     "babel-cli": "^6.26.0",
