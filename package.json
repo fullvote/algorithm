@@ -2,7 +2,7 @@
   "name": "fullvote",
   "author": "Craig Martin",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A voting algorithm for good",
   "main": "lib/algorithm/index.js",
   "files": [
