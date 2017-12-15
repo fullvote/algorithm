@@ -18,16 +18,17 @@
     "prettier": "^1.9.2"
   },
   "scripts": {
-    "js:build": "babel src/algorithm/index.js --out-file lib/algorithm/index.js --source-maps",
-    "js:watch": "babel src/algorithm/index.js --watch --out-file lib/algorithm/index.js --source-maps",
-    "test": "npm run js:test",
-    "test:watch": "npm run js:test:watch",
-    "js:test:watch": "jest --watch",
-    "js:test": "jest",
-    "js:test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --verbose",
-    "prettier": "prettier --write  \"src/**/*.js\" \"!src/**/*.spec.js\"",
-    "prettier-test": "prettier -l \"src/**/*.js\" \"!src/**/*.spec.js\"",
-    "pub": "np"
+    "prebuild": "rm -rf lib && mkdir -p lib/algorithm",
+    "build": "npm run build:transpile",
+    "build:transpile": "babel src/algorithm/index.js --out-file lib/algorithm/index.js --source-maps",
+    "build:transpile:watch": "babel src/algorithm/index.js --watch --out-file lib/algorithm/index.js --source-maps",
+    "test": "npm run test:unit && npm run test:format",
+    "test:unit": "jest",
+    "test:unit:watch": "jest--watch",
+    "test:unit:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --verbose",
+    "test:format": "prettier -l \"src/**/*.js\" \"!src/**/*.spec.js\"",
+    "format": "prettier --write  \"src/**/*.js\" \"!src/**/*.spec.js\"",
+    "pub": "npm run test && npm run build && np"
   },
   "babel": {
     "presets": [
