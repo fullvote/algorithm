@@ -13,7 +13,7 @@ This module is distributed via [npm][https://www.npmjs.com/] which is bundled
 with [node][https://nodejs.org] and should be installed as one of your
 project's `dependencies`:
 
-```
+```bash
 npm install --save fullvote
 ```
 
@@ -25,7 +25,7 @@ npm install --save fullvote
 
 ## Usage
 
-```
+```javascript
 const { getWinner } = require('fullvote');
 // OR
 // import { getWinner} from 'fullvote';
