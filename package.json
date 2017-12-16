@@ -4,7 +4,11 @@
   "license": "MIT",
   "version": "0.2.0",
   "description": "A voting algorithm for good",
-  "main": "lib/algorithm/index.js",
+  "browser": "lib/algorithm/index.js",
+  "main": "src/algorithm/index.js",
+  "engines": {
+    "node": ">=6"
+  },
   "files": [
     "src/algorithm/index.js",
     "lib/algorithm/index.js",
