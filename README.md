@@ -9,8 +9,8 @@
 
 ## Installation
 
-This module is distributed via [npm][https://www.npmjs.com/] which is bundled
-with [node][https://nodejs.org] and should be installed as one of your
+This module is distributed via [npm](https://www.npmjs.com/) which is bundled
+with [node](https://nodejs.org) and should be installed as one of your
 project's `dependencies`:
 
 ```bash
