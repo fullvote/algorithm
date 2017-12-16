@@ -20,13 +20,17 @@
     "babel-preset-typescript": "^7.0.0-alpha.19",
     "jest": "^21.2.1",
     "np": "^2.18.3",
-    "prettier": "^1.9.2"
+    "prettier": "^1.9.2",
+    "uglify-js": "^3.2.2"
   },
   "scripts": {
     "prebuild": "rm -rf lib && mkdir -p lib/algorithm",
-    "build": "npm run build:transpile",
-    "build:transpile": "babel src/algorithm/index.js --out-file lib/algorithm/index.js --source-maps",
+    "build": "npm run build:transpile && npm run build:minify",
+    "build:transpile": "babel src/algorithm/index.js --out-file lib/algorithm/index.js",
+    "build:minify": "uglifyjs lib/algorithm/index.js -o lib/algorithm/index.js",
     "build:transpile:watch": "babel src/algorithm/index.js --watch --out-file lib/algorithm/index.js --source-maps",
+    "build:testFile": "cp -f src/algorithm/index.spec.js lib/algorithm/index.spec.js",
+    "ci": "npm run build && npm run build:testFile && npm run test",
     "test": "npm run test:unit && npm run test:format",
     "test:unit": "jest",
     "test:unit:watch": "jest--watch",
