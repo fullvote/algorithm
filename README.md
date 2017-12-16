@@ -1,10 +1,10 @@
 # Full Vote - Algorithm
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/fullvote/algorithm.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://badges.greenkeeper.io/fullvote/fullvote-algorithm.svg)](https://greenkeeper.io/)
 
 ### What is FullVote? What problem is it solving? How?
 
-[Website](www.fullvote.org) | [Repo](www.fullvote.org)
+[Website](https://www.fullvote.org) Note: doesn't actually exist yet
 
 
 ## Installation
