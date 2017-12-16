@@ -1,5 +1,6 @@
 # Full Vote - Algorithm
 
+[![Build Status](https://travis-ci.org/fullvote/algorithm.svg?branch=master)](https://travis-ci.org/fullvote/algorithm)
 [![Greenkeeper badge](https://badges.greenkeeper.io/fullvote/fullvote-algorithm.svg)](https://greenkeeper.io/)
 
 ### What is FullVote? What problem is it solving? How?
