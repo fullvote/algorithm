@@ -14,15 +14,6 @@
     "lib/algorithm/index.js",
     "LICENSE"
   ],
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-typescript": "^7.0.0-alpha.19",
-    "jest": "^21.2.1",
-    "np": "^2.18.3",
-    "prettier": "^1.9.2",
-    "uglify-js": "^3.2.2"
-  },
   "scripts": {
     "prebuild": "rm -rf lib && mkdir -p lib/algorithm",
     "build": "npm run build:transpile && npm run build:minify",
@@ -39,10 +30,23 @@
     "format": "prettier --write  \"src/**/*.js\" \"!src/**/*.spec.js\"",
     "pub": "npm run test && npm run build && np"
   },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-typescript": "^7.0.0-alpha.19",
+    "jest": "^21.2.1",
+    "np": "^2.18.3",
+    "prettier": "^1.9.2",
+    "uglify-js": "^3.2.2"
+  },
   "babel": {
     "presets": [
       "env"
     ]
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   },
   "prettier": {
     "printWidth": 80,

@@ -1,7 +1,9 @@
 language: node_js
 node_js:
-  - "6"
-  - "7"
   - "8"
+notifications:
+  email: false
 script:
   - npm run ci
+after_success:
+  - npx codecov
