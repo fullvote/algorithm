@@ -249,7 +249,7 @@ const ensureOnlyTrueWinnersGivenTies = (winnerObj, ballots) => {
   return Object.assign({}, winnerObj, { names: [...new Set(winners)] });
 };
 
-const main = ballots => {
+const main = (ballots = []) => {
   let result = getWinner(ballots);
   result = ensureOnlyTrueWinnersGivenTies(result, ballots);
   result.total = ballots.length;

@@ -1,5 +1,23 @@
 const getWinner = require('./index').getWinner;
 
+describe('No ballots', () => {
+  test('1', () => {
+    expect(getWinner([])).toEqual({
+      names: [],
+      reason: 'no ballets',
+      success: false,
+      total: 0
+    });
+  });
+  test('2', () => {
+    expect(getWinner()).toEqual({
+      names: [],
+      reason: 'no ballets',
+      success: false,
+      total: 0
+    });
+  });
+});
 
 describe('Ties:', () => {
 
