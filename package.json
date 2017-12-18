@@ -24,7 +24,7 @@
     "ci": "npm run build && npm run build:testFile && npm run test",
     "test": "npm run test:unit && npm run test:format",
     "test:unit": "jest",
-    "test:unit:watch": "jest--watch",
+    "test:unit:watch": "jest --watch",
     "test:unit:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --verbose",
     "test:format": "prettier -l \"src/**/*.js\" \"!src/**/*.spec.js\"",
     "format": "prettier --write  \"src/**/*.js\" \"!src/**/*.spec.js\"",
