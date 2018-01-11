@@ -63,16 +63,30 @@ describe('Ties:', () => {
         percentage: 33.33
       });
     });
+    test('2', () => {
+      expect(getWinner([
+        ['rubio', 'fakerubio'],
+        ['cruz', 'fakecruz'],
+        ['clinton', 'fakeclinton']
+      ])).toEqual({
+        success: true,
+        names: ['clinton', 'cruz', 'rubio'],
+        received: 1,
+        total: 3,
+        percentage: 33.33
+      });
+    });
   });
 
   describe('more advanced forms of ties', () => {
 
     // A fallback vote should not cost your candidate their chance to win (tie)
+    // "It's not splitting the vote if you 'win'"; was put there in hopes of a win
     test('1', () => {
       expect(getWinner([
-        ['rubio'],
+        ['clinton', 'cruz'],
         ['cruz'],
-        ['clinton', 'cruz']
+        ['rubio']
       ])).toEqual({
         success: true,
         names: ['clinton', 'cruz', 'rubio'],
@@ -82,6 +96,9 @@ describe('Ties:', () => {
       });
     });
 
+    // Uses condition logic
+    // Maybe this should be a three-way tie?
+    // It's not splitting... rationale
     test('2', () => {
       expect(getWinner([
         ['rubio', 'cruz'],
@@ -176,6 +193,7 @@ describe('Ties:', () => {
       });
     });
 
+    // Uses condition logic (barely)
     test('5', () => {
       expect(getWinner([
         ['rubio', 'cruz'],
@@ -186,6 +204,72 @@ describe('Ties:', () => {
         names: ['clinton', 'cruz', 'rubio'],
         received: 2,
         total: 3,
+        percentage: 66.67
+      });
+    });
+
+    // Uses condition logic
+    test('6', () => {
+      expect(getWinner([
+        ['rubio', 'cruz'],
+        ['cruz', 'clinton'],
+        ['clinton', 'rubio'],
+        ['bob'],
+      ])).toEqual({
+        success: true,
+        names: ['clinton', 'cruz', 'rubio'],
+        received: 2,
+        total: 4,
+        percentage: 50.00
+      });
+    });
+  });
+
+  describe('cycle', () => {
+
+    it('4.1', () => {
+      expect(getWinner([
+        ['bush'],
+        ['rubio'],
+        ['kasich'],
+      ])).toEqual({
+        success: true,
+        names: ['bush', 'kasich', 'rubio'],
+        received: 1,
+        total: 3,
+        percentage: 33.33
+      });
+    });
+
+    // score related to "more advanced forms of ties (2)"
+    it('4.2', () => {
+      expect(getWinner([
+        ['bush', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich', 'bush'],
+      ])).toEqual({
+        success: true,
+        names: ['bush', 'kasich', 'rubio'],
+        received: 2,
+        total: 3,
+        percentage: 66.67
+      });
+    });
+
+    // score related to "more advanced forms of ties (2)"
+    test('4.3', () => {
+      expect(getWinner([
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['rubio', 'kasich'],
+        ['rubio', 'kasich'],
+        ['kasich', 'bush'],
+        ['kasich', 'bush'],
+      ])).toEqual({
+        success: true,
+        names: ['bush', 'kasich', 'rubio'],
+        received: 4,
+        total: 6,
         percentage: 66.67
       });
     });
@@ -283,13 +367,14 @@ describe('Ties:', () => {
   });
 
   describe('advanced', () => {
+
     // A fallback vote should not cost your candidate their chance to win (tie)
     // Closest this algorithm comes to "splitting" the vote - carson
     // would have won (with no tiers, and a larger majority) if trump had
     // not been a candidate. But those folks canidate still "won" (via tie).
     // Because trump had a chance of winning (tieing), his fallback votes must
     // not be factored in.
-    // "It's not splitting the vote if you 'win'"
+    // "It's not splitting the vote if you 'win'"; was put there in hopes of a win
     test('1', () => {
       expect(getWinner([
         ['rubio'],
@@ -329,6 +414,7 @@ describe('Ties:', () => {
     */
 
     // Below is CORRECT:
+    // (Tieing *is* winning, so carson doesn't all-out win)
     /*
       rubio    bush    bush    trump   trump   trump   carson    carson
       carson   rubio   rubio   carson  carson  carson  rubio     trump
@@ -470,6 +556,26 @@ describe('Winning:', () => {
         received: 6,
         total: 11,
         percentage: 54.55
+      });
+    });
+  });
+
+  describe('something', () => {
+    test('1', () => {
+      expect(getWinner([
+        ['rubio'],
+        ['rubio'],
+        ['trump', 'carson'],
+        ['trump', 'carson'],
+        ['trump', 'carson'],
+        ['carson'],
+        ['carson']
+      ])).toEqual({
+        success: true,
+        names: ['trump'],
+        received: 3,
+        total: 7,
+        percentage: 42.86
       });
     });
   });
@@ -636,6 +742,53 @@ describe('Winning:', () => {
   });
 
 
+  describe('flipping miscellaneous (happends in loads of other tests not in this describe', () => {
+
+    test('1', () => {
+      expect(getWinner([
+        ['rubio', 'carson'],
+        ['rubio', 'carson'],
+        ['rubio', 'carson'],
+        ['bush', 'cruz'],
+        ['bush', 'cruz'],
+        ['kasich', 'bush'],
+        ['kasich', 'bush'],
+        ['cruz', 'bush'],
+        ['carson', 'bob'],
+        ['carson', 'bob'],
+      ])).toEqual({
+        success: true,
+        names: ['bush', 'carson'],
+        received: 5,
+        total: 10,
+        percentage: 50.00
+      });
+    });
+
+    test('2', () => {
+      expect(getWinner([
+        ['rubio', 'carson'],
+        ['rubio', 'carson'],
+        ['rubio', 'carson'],
+        ['bush', 'cruz'],
+        ['bush', 'cruz'],
+        ['kasich', 'bush'],
+        ['kasich', 'bush'],
+        ['cruz', 'bush'],
+        ['carson', 'bob'],
+        ['carson', 'bob'],
+        ['dad', 'carson'],
+      ])).toEqual({
+        success: true,
+        names: ['carson'],
+        received: 6,
+        total: 11,
+        percentage: 54.55
+      });
+    });
+  });
+
+
   describe('advanced', () => {
 
     test('1', () => {
@@ -658,6 +811,7 @@ describe('Winning:', () => {
       });
     });
 
+    // Uses condition logic (without it 3 way tie, 3 each)
     test('2', () => {
       expect(getWinner([
         ['rubio', 'carson'],
@@ -677,5 +831,97 @@ describe('Winning:', () => {
         percentage: 55.56
       });
     });
+
+    /*
+    test('3.0 - more advanced form of tie?? tough one', () => {
+      // Goes hand in hand with "more advanced forms of ties (2)"
+      // If that one has cruz and rubio winning (not tieing with clinton)
+      // than this one needs rubio to win outright
+      expect(getWinner([
+        ['bob', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich', 'rubio'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 2,
+        total: 3,
+        percentage: 66.67
+      });
+    });
+    test('3.1', () => {
+      expect(getWinner([
+        ['bob', 'rubio'],
+        ['bob', 'rubio'],
+        ['rubio', 'kasich'],
+        ['rubio', 'kasich'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 4,
+        total: 6,
+        percentage: 60.00
+      });
+    });
+    */
+
+
+    /*
+    test('4.4', () => {
+      expect(getWinner([
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 3,
+        total: 5,
+        percentage: 60.00
+      });
+    });
+    test('4.5', () => {
+      expect(getWinner([
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio']
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 5,
+        total: 9,
+        percentage: 55.56
+      });
+    });
+    test('4.6', () => {
+      expect(getWinner([
+        ['rubio', 'trump', 'bush', 'kasich'],
+        ['bush', 'rubio', 'trump', 'kasich'],
+        ['kasich', 'rubio', 'bush', 'trump'],
+        ['trump', 'rubio', 'kasich', 'bush'],
+        ['bush', 'rubio', 'trump', 'kasich'],
+        ['kasich', 'rubio', 'trump', 'bush'],
+        ['trump', 'rubio', 'kasich', 'bush'],
+        ['kasich', 'rubio', 'bush', 'trump'],
+        ['kasich', 'rubio', 'bush', 'trump']
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 5,
+        total: 9,
+        percentage: 55.56
+      });
+    });
+    */
   });
 });

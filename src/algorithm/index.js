@@ -1,5 +1,9 @@
+const pp = obj => require('util').inspect(obj, {depth: null, colors: true}); // eslint-disable-line
+
 const intersection = (a, b) => a.some(n => b.indexOf(n) >= 0);
 // const intersection = (a, b) => new Set([...a, ...b]).size !== [...a, ...b].length;
+
+const flatten = arr => [].concat(...arr);
 
 const getCounts = ballots => {
   return ballots.reduce((accum, ballot) => {
@@ -33,21 +37,21 @@ const getLeader = ballots => {
 
 // Consolates many winner objects into any array of as few as possible
 const handleWinnersReducer = (accum, w) => {
-  const leadingNumber = accum.length ? accum[0].received || 0 : 0;
+  const leadingNumber = accum.length ? accum[0].received : 0;
   let newAccum = [];
   if (w.received === leadingNumber) {
     w.names.forEach(name => {
       const index = accum.findIndex(x => x.names[0] === name);
       if (index >= 0) {
         const item = accum[index];
-        if (w.condition) {
-          if (item.condition === false) {
+        if (w.onlyIf) {
+          if (item.onlyIf === false) {
             newAccum.push(item);
           } else {
             newAccum.push(
               Object.assign({}, item, {
-                condition: [
-                  ...new Set([...(item.condition || []), ...w.condition])
+                onlyIf: [
+                  ...new Set([...item.onlyIf, ...w.onlyIf])
                 ]
               })
             );
@@ -55,7 +59,7 @@ const handleWinnersReducer = (accum, w) => {
         } else {
           newAccum.push(
             Object.assign({}, item, {
-              condition: false
+              onlyIf: false
             })
           );
         }
@@ -65,7 +69,7 @@ const handleWinnersReducer = (accum, w) => {
         newAccum.push(
           Object.assign({}, w, {
             names: [name],
-            condition: w.condition || false
+            onlyIf: w.onlyIf || false
           })
         );
       }
@@ -75,7 +79,7 @@ const handleWinnersReducer = (accum, w) => {
     return w.names.map(name => {
       return Object.assign({}, w, {
         names: [name],
-        condition: w.condition || false
+        onlyIf: w.onlyIf || false
       });
     });
   } else {
@@ -83,7 +87,10 @@ const handleWinnersReducer = (accum, w) => {
   }
 };
 
+// Reduce multiple winner objs (same received/success) into one
+// object with the names array accounting for
 const simpleHandleWinnersReducer = (accum, w) => {
+  /*
   if (w.received === accum.received) {
     return Object.assign({}, accum, {
       names: [...new Set([...accum.names, ...w.names])]
@@ -93,33 +100,63 @@ const simpleHandleWinnersReducer = (accum, w) => {
   } else {
     return accum;
   }
+  */
+  return Object.assign({}, accum, {
+    names: [...new Set([...accum.names, ...w.names])]
+  });
 };
 
-// Handles "condition" property
+// Handles "onlyIf" property
 // todo: what about chained dependency? eg, trump on carson, carson on bush
-const ensureCanWin = (r, i, arr) => {
-  const s = Object.assign({}, r, {
-    names: r.names.filter(x => {
-      return (
-        !r.condition ||
-        !r.condition.length ||
-        r.condition
-          // todo: is this still needed? have i shifted to one winner per
-          // obj. Is this shift complete?
-          .filter(y => y.candidate.indexOf(x) >= 0)
-          .some(y => arr.filter(z => z.names.indexOf(y.onlyIf) >= 0).length)
-      );
-    })
-  });
-  if (!s.names.length) {
+const ensureCanWin = (winnerObj, index, allWinnerObjs) => {
+  const validWinner = (
+    !winnerObj.onlyIf ||
+    !winnerObj.onlyIf.length ||
+    winnerObj.onlyIf
+      .some(y => allWinnerObjs.filter(z => z.names.indexOf(y) >= 0).length)
+  );
+  if (!validWinner) {
     return void 0;
   }
-  delete s.condition;
-  return s;
+  const copy = Object.assign({}, winnerObj);
+  delete copy.onlyIf;
+  return copy;
 };
 
 const getTrueWinners = winnerObjs => {
+  /*
+  // console.log(pp(winnerObjs));
+  const temp = winnerObjs.filter(obj =>
+    obj.onlyIf && winnerObjs.filter(o =>
+      o.names.indexOf(obj.onlyIf) >= 0 && o.received >= obj.received
+    ).length
+  );
+  // console.log(pp(temp));
+
+  const reducedWinnerObjs = temp.reduce(handleWinnersReducer, []);
+  */
+
   const reducedWinnerObjs = winnerObjs.reduce(handleWinnersReducer, []);
+  // console.log(pp(reducedWinnerObjs));
+
+  /*
+  const winnerNamesArray = flatten(reducedWinnerObjs.map(o => o.names));
+  // console.log('winnerNamesArray', winnerNamesArray);
+  const hasWinnerWithDullConditional = reducedWinnerObjs.filter(o =>
+    o.onlyIf && o.onlyIf.filter(onlyIfName =>
+      winnerNamesArray.indexOf(onlyIfName) === -1
+    ).length
+  );
+  // console.log(pp(hasWinnerWithDullConditional));
+  if (hasWinnerWithDullConditional.length) {
+    return hasWinnerWithDullConditional.map(winnerObj => {
+      const copy = Object.assign({}, winnerObj);
+      delete copy.onlyIf;
+      return copy;
+    });
+  }
+  */
+
   return reducedWinnerObjs.map(ensureCanWin).filter(Boolean);
 };
 
@@ -137,7 +174,7 @@ const getWinner = ballots => {
     ballots.filter(b => b.length > 1).length === 0
   ) {
     // If outright winner, return winner object
-    // If tie, handled in the else traversal
+    // (If someone at 50%, don't end since there may be another too but buried)
     return {
       success: true,
       names: leader.names,
@@ -147,20 +184,23 @@ const getWinner = ballots => {
     // If no outright winner, recursively traverse to seek one
     const winners = ballots
       .map((ballot, index) => {
-        const iterationWinners = [];
+        // const iterationWinners = [];
+        /*
         // If current state has a tie, return it as part of the finding process
         // why not `leader.count === ballots.length / leader.names.length` ?
-        if (leader.count === ballots.length / 2) {
+        if (leader.count === ballots.length / leader.names.length) {
           iterationWinners.push({
             success: true,
             names: leader.names,
             received: leader.count
           });
         }
+        */
         if (ballot.length !== 1) {
           // Current leader is not at top of ballot's names
           if (leader.names.indexOf(ballot[0]) === -1) {
-            iterationWinners.push(
+            // iterationWinners.push(
+            return (
               getWinner([
                 ...ballots.slice(0, index),
                 ballot.slice(1),
@@ -176,19 +216,19 @@ const getWinner = ballots => {
               ballot.slice(1).filter(n => leader.names.indexOf(n) >= 0),
               ...ballots.slice(index + 1)
             ]);
-            maybeWinner.condition = [
-              {
-                candidate: maybeWinner.names,
-                onlyIf: ballot[0]
-              }
-            ];
-            iterationWinners.push(maybeWinner);
+            // if this line is toggled out, it enables cut-throat mode
+            maybeWinner.onlyIf = [ ballot[0] ];
+            // iterationWinners.push(maybeWinner);
+            return maybeWinner;
           }
         }
+        return void 0;
+        /*
         return (
           iterationWinners.length > 0 &&
           iterationWinners.reduce(simpleHandleWinnersReducer)
         );
+        */
       })
       .filter(Boolean);
 
