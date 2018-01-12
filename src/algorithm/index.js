@@ -90,17 +90,6 @@ const handleWinnersReducer = (accum, w) => {
 // Reduce multiple winner objs (same received/success) into one
 // object with the names array accounting for
 const simpleHandleWinnersReducer = (accum, w) => {
-  /*
-  if (w.received === accum.received) {
-    return Object.assign({}, accum, {
-      names: [...new Set([...accum.names, ...w.names])]
-    });
-  } else if (w.received > accum.received) {
-    return w;
-  } else {
-    return accum;
-  }
-  */
   return Object.assign({}, accum, {
     names: [...new Set([...accum.names, ...w.names])]
   });
@@ -184,22 +173,9 @@ const getWinner = ballots => {
     // If no outright winner, recursively traverse to seek one
     const winners = ballots
       .map((ballot, index) => {
-        // const iterationWinners = [];
-        /*
-        // If current state has a tie, return it as part of the finding process
-        // why not `leader.count === ballots.length / leader.names.length` ?
-        if (leader.count === ballots.length / leader.names.length) {
-          iterationWinners.push({
-            success: true,
-            names: leader.names,
-            received: leader.count
-          });
-        }
-        */
         if (ballot.length !== 1) {
           // Current leader is not at top of ballot's names
           if (leader.names.indexOf(ballot[0]) === -1) {
-            // iterationWinners.push(
             return (
               getWinner([
                 ...ballots.slice(0, index),
@@ -218,17 +194,10 @@ const getWinner = ballots => {
             ]);
             // if this line is toggled out, it enables cut-throat mode
             maybeWinner.onlyIf = [ ballot[0] ];
-            // iterationWinners.push(maybeWinner);
             return maybeWinner;
           }
         }
         return void 0;
-        /*
-        return (
-          iterationWinners.length > 0 &&
-          iterationWinners.reduce(simpleHandleWinnersReducer)
-        );
-        */
       })
       .filter(Boolean);
 
