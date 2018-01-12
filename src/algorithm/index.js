@@ -113,39 +113,7 @@ const ensureCanWin = (winnerObj, index, allWinnerObjs) => {
 };
 
 const getTrueWinners = winnerObjs => {
-  /*
-  // console.log(pp(winnerObjs));
-  const temp = winnerObjs.filter(obj =>
-    obj.onlyIf && winnerObjs.filter(o =>
-      o.names.indexOf(obj.onlyIf) >= 0 && o.received >= obj.received
-    ).length
-  );
-  // console.log(pp(temp));
-
-  const reducedWinnerObjs = temp.reduce(handleWinnersReducer, []);
-  */
-
   const reducedWinnerObjs = winnerObjs.reduce(handleWinnersReducer, []);
-  // console.log(pp(reducedWinnerObjs));
-
-  /*
-  const winnerNamesArray = flatten(reducedWinnerObjs.map(o => o.names));
-  // console.log('winnerNamesArray', winnerNamesArray);
-  const hasWinnerWithDullConditional = reducedWinnerObjs.filter(o =>
-    o.onlyIf && o.onlyIf.filter(onlyIfName =>
-      winnerNamesArray.indexOf(onlyIfName) === -1
-    ).length
-  );
-  // console.log(pp(hasWinnerWithDullConditional));
-  if (hasWinnerWithDullConditional.length) {
-    return hasWinnerWithDullConditional.map(winnerObj => {
-      const copy = Object.assign({}, winnerObj);
-      delete copy.onlyIf;
-      return copy;
-    });
-  }
-  */
-
   return reducedWinnerObjs.map(ensureCanWin).filter(Boolean);
 };
 
