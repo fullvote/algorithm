@@ -789,6 +789,60 @@ describe('Winning:', () => {
   });
 
 
+  describe('should be able to insert losing candidate ahead to no affect', () => {
+
+    it('none', () => {
+      expect(getWinner([
+        ['rubio'],
+        ['rubio'],
+        ['rubio', 'kasich'],
+        ['kasich'],
+        ['kasich'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 3,
+        total: 5,
+        percentage: 60.00
+      });
+    });
+
+    it('one', () => {
+      expect(getWinner([
+        ['a', 'rubio'],
+        ['rubio'],
+        ['rubio', 'kasich'],
+        ['kasich'],
+        ['kasich'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 3,
+        total: 5,
+        percentage: 60.00
+      });
+    });
+
+    /*
+    it('two', () => {
+      expect(getWinner([
+        ['a', 'rubio'],
+        ['b', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich'],
+        ['kasich'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 3,
+        total: 5,
+        percentage: 60.00
+      });
+    });
+    */
+  });
+
+
   describe('advanced', () => {
 
     test('1', () => {

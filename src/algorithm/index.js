@@ -3,8 +3,6 @@ const pp = obj => require('util').inspect(obj, {depth: null, colors: true}); // 
 const intersection = (a, b) => a.some(n => b.indexOf(n) >= 0);
 // const intersection = (a, b) => new Set([...a, ...b]).size !== [...a, ...b].length;
 
-const flatten = arr => [].concat(...arr);
-
 const getCounts = ballots => {
   return ballots.reduce((accum, ballot) => {
     const name = ballot[0];
@@ -100,9 +98,12 @@ const simpleHandleWinnersReducer = (accum, w) => {
 const ensureCanWin = (winnerObj, index, allWinnerObjs) => {
   const validWinner = (
     !winnerObj.onlyIf ||
-    !winnerObj.onlyIf.length ||
-    winnerObj.onlyIf
-      .some(y => allWinnerObjs.filter(z => z.names.indexOf(y) >= 0).length)
+    // !winnerObj.onlyIf.length ||
+    (
+      winnerObj.onlyIf
+        .some(y => allWinnerObjs.filter(z => z.names.indexOf(y) >= 0).length)
+      && allWinnerObjs.filter(z => !z.onlyIf).length === 0
+    )
   );
   if (!validWinner) {
     return void 0;
