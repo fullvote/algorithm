@@ -1,4 +1,4 @@
-const pp = obj => require('util').inspect(obj, {depth: null, colors: true}); // eslint-disable-line
+const pp = obj => require('util').inspect(obj, { depth: null, colors: true }); // eslint-disable-line
 
 const intersection = (a, b) => a.some(n => b.indexOf(n) >= 0);
 // const intersection = (a, b) => new Set([...a, ...b]).size !== [...a, ...b].length;
@@ -48,9 +48,7 @@ const handleWinnersReducer = (accum, w) => {
           } else {
             newAccum.push(
               Object.assign({}, item, {
-                onlyIf: [
-                  ...new Set([...item.onlyIf, ...w.onlyIf])
-                ]
+                onlyIf: [...new Set([...item.onlyIf, ...w.onlyIf])]
               })
             );
           }
@@ -96,15 +94,13 @@ const simpleHandleWinnersReducer = (accum, w) => {
 // Handles "onlyIf" property
 // todo: what about chained dependency? eg, trump on carson, carson on bush
 const ensureCanWin = (winnerObj, index, allWinnerObjs) => {
-  const validWinner = (
+  const validWinner =
     !winnerObj.onlyIf ||
     // !winnerObj.onlyIf.length ||
-    (
-      winnerObj.onlyIf
-        .some(y => allWinnerObjs.filter(z => z.names.indexOf(y) >= 0).length)
-      && allWinnerObjs.filter(z => !z.onlyIf).length === 0
-    )
-  );
+    (winnerObj.onlyIf.some(
+      y => allWinnerObjs.filter(z => z.names.indexOf(y) >= 0).length
+    ) &&
+      allWinnerObjs.filter(z => !z.onlyIf).length === 0);
   if (!validWinner) {
     return void 0;
   }
@@ -145,13 +141,11 @@ const getWinner = ballots => {
         if (ballot.length !== 1) {
           // Current leader is not at top of ballot's names
           if (leader.names.indexOf(ballot[0]) === -1) {
-            return (
-              getWinner([
-                ...ballots.slice(0, index),
-                ballot.slice(1),
-                ...ballots.slice(index + 1)
-              ])
-            );
+            return getWinner([
+              ...ballots.slice(0, index),
+              ballot.slice(1),
+              ...ballots.slice(index + 1)
+            ]);
           } else if (intersection(ballot.slice(1), leader.names)) {
             // Current leader is at top, but a tied leader is also under it
             // Allow fallbacks to be considered (but never at cost to the candidate)
@@ -162,7 +156,7 @@ const getWinner = ballots => {
               ...ballots.slice(index + 1)
             ]);
             // if this line is toggled out, it enables cut-throat mode
-            maybeWinner.onlyIf = [ ballot[0] ];
+            maybeWinner.onlyIf = [ballot[0]];
             return maybeWinner;
           }
         }
@@ -220,32 +214,35 @@ const ensureOnlyTrueWinnersGivenTies = (winnerObj, ballots) => {
   }, 0);
   winners.push(
     ...Object.keys(counts).filter(name => {
-      return counts[name] >= highest
-        && (
-          // relevant ballots
-          ballots.filter(ballot =>
+      return (
+        counts[name] >= highest &&
+        // relevant ballots
+        ballots.filter(
+          ballot =>
             ballot
               .filter(n => winnerObj.names.indexOf(n) >= 0)
               .indexOf(name) === 0
-          ).length
-          -
+        ).length -
           // ballots where name beaten by outright winner
           ballots.filter(ballot => {
-            return ballot.indexOf(winners[0]) > -1
-              && ballot.indexOf(winners[0]) < ballot.indexOf(name);
-          }).length
-          +
+            return (
+              ballot.indexOf(winners[0]) > -1 &&
+              ballot.indexOf(winners[0]) < ballot.indexOf(name)
+            );
+          }).length +
           // ballots where name beaten by someone else
-          ballots.filter(ballot =>
-            ballot
-              .filter(n => winnerObj.names.indexOf(n) >= 0)
-              .indexOf(name) !== 0
-          ).filter(ballot =>
-            ballot.indexOf(name) >= 0 && ballot[0] !== winners[0]
-          ).length
-          >=
+          ballots
+            .filter(
+              ballot =>
+                ballot
+                  .filter(n => winnerObj.names.indexOf(n) >= 0)
+                  .indexOf(name) !== 0
+            )
+            .filter(
+              ballot => ballot.indexOf(name) >= 0 && ballot[0] !== winners[0]
+            ).length >=
           highest
-        );
+      );
     })
   );
 
