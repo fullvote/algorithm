@@ -212,7 +212,7 @@ const ensureOnlyTrueWinnersGivenTies = (winnerObj, ballots) => {
   );
 
   // After that, whoever has (or is tied with) the most first place votes
-  // is added
+  // who satisfies the below logic
   const highest = Object.keys(counts).reduce((high, name) => {
     return high > counts[name] || counts[name] === winnerObj.received
       ? high
@@ -220,7 +220,32 @@ const ensureOnlyTrueWinnersGivenTies = (winnerObj, ballots) => {
   }, 0);
   winners.push(
     ...Object.keys(counts).filter(name => {
-      return counts[name] >= highest;
+      return counts[name] >= highest
+        && (
+          // relevant ballots
+          ballots.filter(ballot =>
+            ballot
+              .filter(n => winnerObj.names.indexOf(n) >= 0)
+              .indexOf(name) === 0
+          ).length
+          -
+          // ballots where name beaten by outright winner
+          ballots.filter(ballot => {
+            return ballot.indexOf(winners[0]) > -1
+              && ballot.indexOf(winners[0]) < ballot.indexOf(name);
+          }).length
+          +
+          // ballots where name beaten by someone else
+          ballots.filter(ballot =>
+            ballot
+              .filter(n => winnerObj.names.indexOf(n) >= 0)
+              .indexOf(name) !== 0
+          ).filter(ballot =>
+            ballot.indexOf(name) >= 0 && ballot[0] !== winners[0]
+          ).length
+          >=
+          highest
+        );
     })
   );
 

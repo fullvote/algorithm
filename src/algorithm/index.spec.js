@@ -227,7 +227,7 @@ describe('Ties:', () => {
 
   describe('cycle', () => {
 
-    it('4.1', () => {
+    test('4.1', () => {
       expect(getWinner([
         ['bush'],
         ['rubio'],
@@ -242,7 +242,7 @@ describe('Ties:', () => {
     });
 
     // score related to "more advanced forms of ties (2)"
-    it('4.2', () => {
+    test('4.2', () => {
       expect(getWinner([
         ['bush', 'rubio'],
         ['rubio', 'kasich'],
@@ -791,7 +791,7 @@ describe('Winning:', () => {
 
   describe('should be able to insert losing candidate ahead to no affect', () => {
 
-    it('none', () => {
+    test('none', () => {
       expect(getWinner([
         ['rubio'],
         ['rubio'],
@@ -807,7 +807,7 @@ describe('Winning:', () => {
       });
     });
 
-    it('one', () => {
+    test('one', () => {
       expect(getWinner([
         ['a', 'rubio'],
         ['rubio'],
@@ -823,8 +823,7 @@ describe('Winning:', () => {
       });
     });
 
-    /*
-    it('two', () => {
+    test('two', () => {
       expect(getWinner([
         ['a', 'rubio'],
         ['b', 'rubio'],
@@ -839,7 +838,66 @@ describe('Winning:', () => {
         percentage: 60.00
       });
     });
-    */
+  });
+
+
+  describe('current leader hides true winner behind it - happens in other tests too', () => {
+    // tough one. it won't look behind bush since he is a leader.
+    // However bush ends up getting beat when rubio is dismissed
+    // for kasich.... hmmm
+    xit('1', () => {
+      expect(getWinner([
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 3,
+        total: 5,
+        percentage: 60.00
+      });
+    });
+    xit('2', () => {
+      expect(getWinner([
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['bush', 'rubio'],
+        ['rubio', 'kasich'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio'],
+        ['kasich', 'rubio']
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 5,
+        total: 9,
+        percentage: 55.56
+      });
+    });
+    xit('3', () => {
+      expect(getWinner([
+        ['rubio', 'trump', 'bush', 'kasich'],
+        ['bush', 'rubio', 'trump', 'kasich'],
+        ['kasich', 'rubio', 'bush', 'trump'],
+        ['trump', 'rubio', 'kasich', 'bush'],
+        ['bush', 'rubio', 'trump', 'kasich'],
+        ['kasich', 'rubio', 'trump', 'bush'],
+        ['trump', 'rubio', 'kasich', 'bush'],
+        ['kasich', 'rubio', 'bush', 'trump'],
+        ['kasich', 'rubio', 'bush', 'trump']
+      ])).toEqual({
+        success: true,
+        names: ['rubio'],
+        received: 5,
+        total: 9,
+        percentage: 55.56
+      });
+    });
   });
 
 
@@ -886,7 +944,6 @@ describe('Winning:', () => {
       });
     });
 
-    /*
     test('3.0 - more advanced form of tie?? tough one', () => {
       // Goes hand in hand with "more advanced forms of ties (2)"
       // If that one has cruz and rubio winning (not tieing with clinton)
@@ -916,66 +973,10 @@ describe('Winning:', () => {
         names: ['rubio'],
         received: 4,
         total: 6,
-        percentage: 60.00
+        percentage: 66.67
       });
     });
-    */
 
 
-    /*
-    test('4.4', () => {
-      expect(getWinner([
-        ['bush', 'rubio'],
-        ['bush', 'rubio'],
-        ['rubio', 'kasich'],
-        ['kasich', 'rubio'],
-        ['kasich', 'rubio'],
-      ])).toEqual({
-        success: true,
-        names: ['rubio'],
-        received: 3,
-        total: 5,
-        percentage: 60.00
-      });
-    });
-    test('4.5', () => {
-      expect(getWinner([
-        ['bush', 'rubio'],
-        ['bush', 'rubio'],
-        ['bush', 'rubio'],
-        ['bush', 'rubio'],
-        ['rubio', 'kasich'],
-        ['kasich', 'rubio'],
-        ['kasich', 'rubio'],
-        ['kasich', 'rubio'],
-        ['kasich', 'rubio']
-      ])).toEqual({
-        success: true,
-        names: ['rubio'],
-        received: 5,
-        total: 9,
-        percentage: 55.56
-      });
-    });
-    test('4.6', () => {
-      expect(getWinner([
-        ['rubio', 'trump', 'bush', 'kasich'],
-        ['bush', 'rubio', 'trump', 'kasich'],
-        ['kasich', 'rubio', 'bush', 'trump'],
-        ['trump', 'rubio', 'kasich', 'bush'],
-        ['bush', 'rubio', 'trump', 'kasich'],
-        ['kasich', 'rubio', 'trump', 'bush'],
-        ['trump', 'rubio', 'kasich', 'bush'],
-        ['kasich', 'rubio', 'bush', 'trump'],
-        ['kasich', 'rubio', 'bush', 'trump']
-      ])).toEqual({
-        success: true,
-        names: ['rubio'],
-        received: 5,
-        total: 9,
-        percentage: 55.56
-      });
-    });
-    */
   });
 });
