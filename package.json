@@ -35,7 +35,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-typescript": "^7.0.0-alpha.19",
     "jest": "^21.2.1",
-    "np": "^2.18.3",
+    "np": "^3.0.3",
     "prettier": "^1.9.2",
     "uglify-js": "^3.2.2"
   },
