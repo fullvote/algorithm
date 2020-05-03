@@ -37,7 +37,7 @@
     "jest": "^22.0.3",
     "np": "^2.18.3",
     "prettier": "^1.9.2",
-    "uglify-js": "^3.2.2"
+    "uglify-js": "^3.9.2"
   },
   "babel": {
     "presets": [
